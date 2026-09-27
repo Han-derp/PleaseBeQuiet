@@ -1,0 +1,34 @@
+{
+  "version": "0.5",
+  "note": "仅补充原剧本没有的ID；不覆盖C原story.json。病房窗户倒影沿用M01但不走独立MIRROR场景。",
+  "lines": [
+    {
+      "id": "W00A",
+      "scene": "WARD",
+      "channel": "哥·心声",
+      "text": "以前，是我学着用手势和小满说话。",
+      "trigger": "开场，病房图显示后第一条。"
+    },
+    {
+      "id": "W00B",
+      "scene": "WARD",
+      "channel": "哥·心声",
+      "text": "那次事故之后，我也听不见了。",
+      "trigger": "W00A后约2秒。"
+    },
+    {
+      "id": "W00C",
+      "scene": "WARD",
+      "channel": "哥·心声",
+      "text": "也没办法再开口。",
+      "trigger": "W00B后约2秒。"
+    },
+    {
+      "id": "F10B",
+      "scene": "FINAL_DOOR",
+      "channel": "哥·心声",
+      "text": "如果连照顾她都不需要我了……我是不是，就没有用了？",
+      "trigger": "原F10后，妹妹早已主动伸手。"
+    }
+  ]
+}

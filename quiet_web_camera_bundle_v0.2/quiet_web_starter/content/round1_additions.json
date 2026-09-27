@@ -1,0 +1,13 @@
+{
+  "version": "0.3",
+  "note": "第一轮演出增量。保留 content/story.json 原文；此文件仅补充过渡独白与沟通动作呈现元数据。",
+  "lines": [
+    {
+      "id": "BR01",
+      "scene": "RETURN_WARD",
+      "channel": "哥·心声",
+      "text": "我应该高兴的。",
+      "trigger": "R05 回应或跳过后，镜头移向左侧窗户；倒影浮现前出现。"
+    }
+  ]
+}

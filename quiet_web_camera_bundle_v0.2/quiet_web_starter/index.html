@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>请勿喧哗 · 第一轮剧情演出版 v0.3</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="shell">
+  <header id="toolbar" aria-label="游戏控制">
+    <strong>请勿喧哗</strong><span id="modeTag">连接中……</span>
+    <span id="inputTag">等待输入</span>
+    <div class="spacer"></div>
+    <button id="musicBtn">声音：开</button><button id="pauseBtn">暂停</button><button id="helpBtn">帮助</button><button id="quitBtn">退出</button>
+  </header>
+  <main id="stage" role="application" aria-label="互动叙事游戏舞台">
+    <div id="wardBg" class="background"></div>
+    <div id="oceanBg" class="background"></div>
+    <div id="oceanTint"></div>
+    <!-- Mirror remains in the hospital window; no extra painted background required. -->
+    <div id="mirrorLayer" aria-hidden="true">
+      <div id="mirrorShape">
+        <div class="reflectedPerson"><div class="reflectedHead"><span class="reflectedEyes"></span><span class="reflectedMouth"></span></div><div class="reflectedShoulders"></div></div>
+        <div id="windowThought" class="hidden">如果她不再需要我呢？</div>
+      </div>
+    </div>
+    <div id="glassLayer"></div>
+    <div id="fishLayer" aria-hidden="true"><div class="school left"><span>🐟</span><span>🐟</span><span>🐟</span></div><div class="school right"><span>🐟</span><span>🐟</span><span>🐟</span></div><div id="specialFish" aria-label="小橙鱼">🐠</div></div>
+    <div id="waterRipple" aria-hidden="true"></div>
+    <!-- Small, independently replaceable overlays; D can later supply matching PNG layers. -->
+    <div id="wardNote" class="wardProp hidden" aria-hidden="true"><span class="propLabel">哥哥写下的便签</span><span id="noteText"></span></div>
+    <div id="nurseCue" class="wardProp hidden" aria-hidden="true"><span class="nurseWaves">···　›　›　›</span><small>护士似乎说了什么，残缺的字一闪而过。</small><span id="nurseResponse">小满先停下了手中的动作。</span></div>
+    <div id="wardTickets" class="wardProp hidden" aria-hidden="true"><span class="ticketStub">水族馆<br><b>入场券 01</b></span><span class="ticketStub">水族馆<br><b>入场券 02</b></span></div>
+    <div id="gestureMode" class="hidden" aria-hidden="true">✋ <b>无声交流</b><small>小满的动作将以剧情字幕释义</small></div>
+    <div id="wardGesture" class="actionBubble hidden"><div class="roleName">小满 · 她先做出动作</div><span id="actionIcon">✋</span><small id="actionInfo">小满先向你示意</small></div>
+    <div id="playerGesture" class="hidden" aria-hidden="true"><div class="roleName">轮到你 · 回应她</div><span id="playerIcon">✋</span><small id="playerInfo">张开手掌</small></div>
+    <div id="mirrorTech" class="hidden">镜中动作：预制演出（尚未连接面捕，可跳过）</div>
+    <div id="reaching" class="actionBubble hidden"><span>🤲</span><small>她先向你伸出了手</small></div>
+    <div id="storyHud"><div id="goal"></div><div id="dialogueBadge" class="hidden"></div><div id="captionChannel"></div><div id="caption" aria-live="polite"></div></div>
+    <div id="sceneVeil" aria-hidden="true"></div>
+    <div id="actionPanel"><button id="nextBtn" class="hidden">继续</button><button id="accessibleBtn">辅助操作</button></div>
+    <div id="cover">
+      <h1>请勿喧哗</h1><p>用手势交流，也试着听见没有说出口的回应。</p>
+      <p class="small">这是网页重建的可渐进原型。模拟输入将明确显示，不等于摄像头识别。</p>
+      <button id="startBtn">进入体验</button>
+    </div>
+  </main>
+  <footer id="debug">
+    <span>开发/辅助测试输入：</span>
+    <button data-input="PALM">P · ✋ 张掌</button>
+    <button data-input="GOOD">G · 👍 鼓励</button>
+    <button data-input="WAVE">W · ↔ 挥手</button>
+    <button data-input="MOVING">M · 移动</button>
+    <button data-input="STILL">S · 静止切换</button>
+    <button data-input="NO_HAND">N · 手离开</button>
+    <button data-input="CUP">C · 模拟双手轻捧</button>
+    <label><input type="checkbox" id="disableHints">T8盲测：关闭提示</label><label>场景调试：<select id="sceneJump"><option value="">正常流程</option></select></label>
+  </footer>
+</div>
+<div id="modal" class="hidden" role="dialog" aria-modal="true" aria-label="暂停或帮助">
+ <div class="modalBox"><h2 id="modalTitle">暂停</h2><p id="modalBody"></p><div><button id="closeModal">继续体验</button></div></div>
+</div>
+<script src="vision_adapter.js" defer></script>
+<script src="app.js" defer></script>
+</body></html>
