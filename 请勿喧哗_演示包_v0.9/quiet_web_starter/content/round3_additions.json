@@ -1,0 +1,42 @@
+{
+  "version": "0.6",
+  "note": "v0.6 演出增强：开场安静教学（静止也是输入）与终局隐藏回应（放下手也是回答）。仅补充原剧本没有的ID；不覆盖 C 原 story.json，不修改 B 识别代码。",
+  "lines": [
+    {
+      "id": "C01",
+      "scene": "CALIBRATE",
+      "channel": "屏",
+      "text": "识别到了。现在，试着对她挥挥手。"
+    },
+    {
+      "id": "C02",
+      "scene": "CALIBRATE",
+      "channel": "境",
+      "text": "太吵了。她听不清。"
+    },
+    {
+      "id": "C03",
+      "scene": "CALIBRATE",
+      "channel": "屏",
+      "text": "现在，什么都别做。"
+    },
+    {
+      "id": "C04",
+      "scene": "CALIBRATE",
+      "channel": "境",
+      "text": "她听见了安静。"
+    },
+    {
+      "id": "N01",
+      "scene": "FINAL_DOOR",
+      "channel": "境",
+      "text": "你放下了手。她也放下了。"
+    },
+    {
+      "id": "N02",
+      "scene": "FINAL_DOOR",
+      "channel": "哥·心声",
+      "text": "有些话，本来就安静。"
+    }
+  ]
+}

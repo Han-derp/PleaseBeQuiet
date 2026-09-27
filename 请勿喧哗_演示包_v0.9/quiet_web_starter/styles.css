@@ -1,0 +1,200 @@
+* { box-sizing:border-box; }
+:root {color-scheme:dark;font-family:"Microsoft YaHei", system-ui, sans-serif;}
+html, body { margin:0;background:#0b1222;color:#f5f6fa;min-height:100%; }
+#shell {width:min(100vw,1280px);margin:auto;}
+#toolbar {display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 14px;background:#0a1325; font-size:13px;}
+#toolbar .spacer{flex:1}
+button, select {font:inherit;color:#e8eff9;background:#223955;border:1px solid #5e7d98;border-radius:8px;padding:7px 11px;cursor:pointer;}
+button:hover {background:#315375;} button:focus-visible,select:focus-visible {outline:2px solid #bcdcf9;}
+#modeTag {color:#e8bb8b;font-size:12px}#inputTag {color:#bcd5ef;font-size:12px}
+#stage {width:100%;aspect-ratio:16/9;max-height:calc(100vh - 115px);position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(145deg,#11243d,#0a1325)}
+.background,#oceanTint,#glassLayer,#mirrorLayer,#fishLayer,#waterRipple {position:absolute;inset:0;pointer-events:none}
+.background {background-size:cover;background-position:center;transition:opacity .7s ease,filter 1s ease,transform 1.5s ease;}
+#wardBg{background-image:url('assets/ward.jpg');opacity:0}#oceanBg{background-image:url('assets/ocean.jpg');opacity:0}
+#oceanTint{background:#031739;opacity:0;transition:opacity 1.1s ease;}
+#glassLayer {background:linear-gradient(125deg,#d5faff22,#f7f9ff18 40%,#c2dcfa42 46%,#edf9ff12 80%);backdrop-filter:blur(2px);opacity:0;transition:opacity 1.8s ease;z-index:3}
+#mirrorLayer {display:grid;place-items:center;opacity:0;transition:opacity 1s;z-index:2}
+#mirrorShape {border:5px solid #a9cce166;border-radius:50% 50% 18px 18px;box-shadow:0 0 120px #c7e9ff33 inset;width:31%;height:82%;display:grid;place-items:center;background:#09243da8;color:#b7d8ee88;letter-spacing:7px}
+#fishLayer{opacity:0;transition:opacity 1.2s;z-index:1}
+.school {position:absolute;display:flex;gap:8px;color:#d5f9fe;text-shadow:0 0 12px #a7fbff;transition:transform .12s linear;}
+.school span:nth-child(2) {transform:translateY(27px) scale(.85)}.school span:nth-child(3) {transform:translateY(-15px) scale(.6)}
+.school.left{top:49%;left:11%;font-size:33px}.school.right{top:49%;right:12%;font-size:33px;transform:scaleX(-1)}
+#specialFish {position:absolute;left:45%;top:51%;font-size:51px;filter:drop-shadow(0 0 9px #fff3b799);transform:translate(0,0);will-change:transform}
+#waterRipple {z-index:2;opacity:0;transition:opacity .14s;left:50%;top:50%;width:20%;height:35%;inset:auto;border:2px solid #d7f2ff9c;border-radius:50%;box-shadow:0 0 25px #b5efff77,0 0 45px #4ca4e1aa inset;}
+.actionBubble{position:absolute;z-index:5;left:63%;top:14%;background:#0d2639ab;padding:13px 20px;border:1px solid #95c4da77;border-radius:20px;display:flex;align-items:center;gap:13px;box-shadow:0 5px 30px #0015}
+.actionBubble span{font-size:40px}.actionBubble small{font-size:14px;max-width:150px}
+#reaching{left:36%;top:43%;animation:approach 1.5s ease-out infinite alternate}
+@keyframes approach{from{transform:scale(.96)}to{transform:scale(1.05)}}
+#storyHud {position:absolute;bottom:20px;left:13%;right:13%;z-index:6;text-align:center;pointer-events:none;text-shadow:0 1px 14px #000c}
+#goal {font-size:16px;color:#ffecd0;margin-bottom:8px;min-height:21px;}
+#captionChannel {font-size:12px;letter-spacing:1px;color:#d3e9f8;margin-bottom:5px;}
+#caption {font-size:clamp(16px,2vw,25px);background:linear-gradient(90deg,transparent,#051323ba 20%,#051323ba 80%,transparent);padding:12px 18px;min-height:52px;line-height:1.5;}
+#actionPanel {position:absolute;z-index:8;bottom:22px;right:16px;display:flex;flex-direction:column;gap:9px;align-items:end}
+#nextBtn, #accessibleBtn {background:#0c203bd9;font-size:13px;padding:7px 12px;}
+#testBtn.on{background:#b98a3f;border-color:#efd7a4;color:#221503}
+#endingArt {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;opacity:0;transition:opacity 1.4s ease;pointer-events:none}
+#endingArt.visible{opacity:1}
+/* v0.9 结尾定格：明亮水族馆里，鱼群在人物身前重新出现，中央只有一句话与标题。 */
+.endingText{position:absolute;left:0;right:0;text-align:center;pointer-events:none;opacity:0;transition:opacity 1.6s ease;z-index:7}
+.endingText.visible{opacity:1}
+#endingLine{top:56%;font-size:clamp(20px,3.4vw,30px);color:#eafaff;letter-spacing:.14em;text-shadow:0 0 18px #7fd4ff,0 2px 10px #0015}
+#endingTitle{top:68%;font-size:clamp(44px,8vw,86px);color:#fff;letter-spacing:.32em;font-weight:700;text-indent:.32em;text-shadow:0 0 30px #9fe4ff,0 4px 18px #0018}
+/* v0.9 技术透视模式：右上角半透明实时状态面板。 */
+#techHud {position:absolute;top:12px;right:14px;z-index:9;pointer-events:none;
+  background:#04141fd6;border:1px solid #3fa7a755;border-radius:10px;padding:10px 14px;
+  font-family:Consolas,'Courier New',monospace;font-size:12px;line-height:1.75;
+  letter-spacing:.06em;color:#9fe8e2;text-shadow:0 0 8px #59e8dc55;min-width:196px;
+  box-shadow:0 4px 26px #000a}
+#techHud .techTitle{color:#d9fff9;letter-spacing:.28em;margin-bottom:2px;font-size:11px}
+#techHud .techRow{display:flex;justify-content:space-between;gap:14px}
+#techHud .techRow span{color:#6fb7b2}
+#techHud .techRow b{color:#c9f6ee;font-weight:400;min-width:60px;text-align:right}
+#techHud .techRow.event b{color:#8ad8ff}
+#techHud .techRow.event.lit b{color:#ffd76a;text-shadow:0 0 10px #ffce5b}
+#cover {position:absolute;inset:0;background:#08182ad9;z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;}
+#cover h1 {font-size:clamp(37px,5vw,68px);letter-spacing:.25em;font-weight:300;margin:0 0 26px;}#cover p{color:#d4e1ef}#cover .small{font-size:13px;max-width:600px;line-height:1.7}
+#debug {padding:9px 12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:51px;background:#15223b;font-size:11px}
+#debug button, #debug select {font-size:11px;padding:5px 7px;}
+#modal {position:fixed;inset:0;z-index:50;background:#071325d9;display:grid;place-items:center;padding:12px}
+.modalBox{background:#11243d;border:1px solid #8daac8;border-radius:16px;padding:28px;max-width:460px;line-height:1.7}
+.hidden, #modal.hidden {display:none!important;}
+@media (max-width:640px) { #toolbar{gap:5px;flex-wrap:wrap}#storyHud{left:4%;right:4%;bottom:9px}#goal{font-size:11px}#caption{font-size:13px;padding:7px;}#actionPanel{bottom:75px}#debug{max-height:160px;overflow:auto} .actionBubble{left:50%;top:10%;} }
+
+/* v0.3 First-round direction: existing static art remains untouched. */
+#oceanTint{z-index:1}
+#stage.is-ward #wardBg{transform:scale(1.015)}
+#stage.is-mirror #wardBg{transform:scale(1.18);transform-origin:24% 37%;filter:brightness(.69) saturate(.85)}
+#stage.is-final #wardBg{transform:scale(1.055);transform-origin:66% 43%;filter:brightness(.87) saturate(.9)}
+#stage.is-mirror:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,#041a3100 5%,#07152a61 41%,#041023ab 94%);animation:mirrorNight 1.6s ease both}
+@keyframes mirrorNight{from{opacity:0}to{opacity:1}}
+#mirrorLayer{inset:auto;left:2%;top:7.8%;width:27.9%;height:54%;z-index:2;display:block;overflow:hidden;pointer-events:none}
+#mirrorShape{width:100%;height:100%;border:0;border-radius:2px;box-shadow:inset 0 0 56px #020c1c8c,0 0 12px #6db8e626;background:linear-gradient(116deg,#70abd414,#011b3682 54%,#bdeeff11 94%);color:#d5effa;position:relative;overflow:hidden;letter-spacing:normal}
+#mirrorShape:after{content:"";position:absolute;inset:-40%;background:linear-gradient(110deg,transparent 43%,#cceeff0e 48%,transparent 53%);animation:windowLight 7s ease-in-out infinite alternate}
+@keyframes windowLight{to{transform:translateX(25%)}}
+.reflectedPerson{position:absolute;inset:15% 0 0;filter:blur(3.4px);opacity:.68;transform:translateY(11px);transition:opacity 1s,transform 2.2s}
+#stage.is-mirror .reflectedPerson{animation:reflectionBreath 3.2s ease-in-out infinite alternate}
+@keyframes reflectionBreath{to{transform:translateY(0px);filter:blur(2.8px)}}
+.reflectedHead{position:absolute;top:10%;left:40%;width:20%;height:36%;border-radius:50% 48% 46% 48%;background:linear-gradient(120deg,#071b2baa,#8db4c754);box-shadow:0 0 28px #b1cadd33}
+.reflectedEyes{position:absolute;top:47%;left:25%;width:50%;height:1.5%;background:#96c5da6e;animation:reflectionBlink 6s infinite}
+@keyframes reflectionBlink{0%,93%,100%{opacity:.7}95%{opacity:0}}
+.reflectedMouth{position:absolute;left:41%;top:74%;width:16%;height:2%;border-radius:50%;background:#bdd6e685;transition:height .65s,top .65s}
+#mirrorLayer.trying-to-speak .reflectedMouth{height:9%;top:71%;background:#a9cde490}
+.reflectedShoulders{position:absolute;top:43%;left:19%;height:80%;width:62%;border-radius:45% 45% 4% 4%;background:linear-gradient(100deg,#122947c7,#bfd6e52f 59%,#152946a6);box-shadow:0 -14px 16px #6b8bad19}
+#windowThought{position:absolute;z-index:1;top:8%;left:9%;right:8%;font-size:clamp(10px,1.25vw,16px);line-height:1.6;text-align:center;color:#d9eafaab;text-shadow:0 0 12px #d3e8fa;animation:windowThoughtFade 2.5s ease-in-out both}
+@keyframes windowThoughtFade{0%{opacity:0}40%{opacity:.9}100%{opacity:.25}}
+#mirrorTech{position:absolute;top:10%;right:4%;z-index:5;font-size:12px;letter-spacing:.02em;color:#bdcfe0;border:1px solid #a9cce144;background:#091b2cc9;padding:7px 12px;border-radius:8px;pointer-events:none}
+#stage.is-mirror #storyHud{bottom:16px}
+#sceneVeil{position:absolute;inset:0;z-index:7;pointer-events:none;background:radial-gradient(ellipse at 24% 40%,#27718f 0%,#091e3e 70%,#071c32 100%);opacity:0;transition:opacity .52s ease}
+#sceneVeil.visible{opacity:1}
+#stage.is-mirror #wardBg,#stage.is-final #wardBg{transition:opacity .7s,filter 1.5s,transform 1.8s}
+#glassLayer{z-index:3}
+#wardNote{position:absolute;left:9%;top:60%;z-index:4;width:28%;min-height:90px;transform:rotate(-2deg);background:#e2e8f1e0;color:#23405b;box-shadow:0 12px 22px #030d219c;padding:12px 16px;text-shadow:none;animation:noteIn .46s ease both}
+#wardNote .propLabel{display:block;font-size:11px;color:#52647e;margin-bottom:8px;border-bottom:1px solid #9daab9;padding-bottom:4px}
+#noteText{display:block;font-size:clamp(15px,1.7vw,23px);position:relative;font-family:"KaiTi","Microsoft YaHei",sans-serif}
+#wardNote.crossed #noteText:after{content:"";position:absolute;left:-3%;right:-1%;top:52%;height:3px;background:#35536eb0;transform-origin:left center;animation:crossIt .8s ease both}
+@keyframes crossIt{from{transform:rotate(-2deg) scaleX(0)}to{transform:rotate(-2deg) scaleX(1)}}
+@keyframes noteIn{from{opacity:0;transform:translateY(15px) rotate(-2deg)}to{opacity:1;transform:translateY(0) rotate(-2deg)}}
+#nurseCue{position:absolute;left:4%;top:36%;width:29%;z-index:4;display:flex;flex-direction:column;gap:8px;color:#c4e4f2;background:#071b30c2;border-left:2px solid #7fc2d267;padding:9px 12px;border-radius:8px;animation:noteIn .8s ease both}
+#nurseCue .nurseWaves{letter-spacing:3px;opacity:.6}
+#nurseCue small{font-size:12px;line-height:1.5}
+#nurseResponse{position:relative;color:#f5e9c7;font-size:13px;animation:sisterNotices 2s ease-in-out infinite alternate}
+@keyframes sisterNotices{to{text-shadow:0 0 13px #fff4cb9e;transform:translateX(6px)}}
+#wardTickets{position:absolute;z-index:4;right:20%;top:58%;display:flex;gap:8px;transform:rotate(-8deg);animation:ticketOffer .9s ease-out both}
+.ticketStub{min-width:110px;padding:8px 14px;border:1px dashed #8394a8;color:#223c4f;background:#e7e1c6e7;box-shadow:0 6px 19px #0413228e;text-align:center;line-height:1.5;font-size:12px;border-radius:3px}
+.ticketStub b{letter-spacing:1px;font-weight:500;font-size:13px}
+@keyframes ticketOffer{from{opacity:0;transform:translate(50px,-18px) rotate(-8deg)}to{opacity:1;transform:translate(0,0) rotate(-8deg)}}
+#gestureMode{position:absolute;z-index:4;right:2%;top:3.2%;display:flex;align-items:center;gap:7px;background:#0b2a3abf;border:1px solid #a4d9e37d;border-radius:10px;padding:7px 10px;font-size:13px;max-width:42%;text-shadow:0 0 9px #031221}
+#gestureMode b{font-size:13px;white-space:nowrap;font-weight:500}
+#gestureMode small{font-size:11px;opacity:.8;line-height:1.3}
+#wardGesture{left:auto;right:5%;top:39%;display:flex;flex-wrap:wrap;gap:9px;width:min(29%,300px);border:1px solid #82ccd7ac;background:#072b39d9;min-height:84px;padding:9px 14px;animation:gestureAppear .48s ease both}
+#wardGesture .roleName,#playerGesture .roleName{width:100%;font-size:12px;letter-spacing:.04em;color:#b9f4e7;border-bottom:1px solid #b6eff83d;padding-bottom:4px}
+#wardGesture span{display:inline-block;animation:gentleGesture 1.5s ease-in-out infinite alternate}
+#wardGesture small{font-size:12px;line-height:1.35;flex:1}
+@keyframes gentleGesture{to{transform:rotate(9deg) translateY(-4px)}}
+@keyframes gestureAppear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+#playerGesture{position:absolute;z-index:5;left:3%;top:43%;display:flex;align-items:center;flex-wrap:wrap;gap:6px;background:#202c4dcc;border:1px solid #f9dc9c91;padding:11px 16px;border-radius:14px;width:min(23%,230px);animation:gestureAppear .4s both}
+#playerGesture .roleName{color:#ffe4a3;border-color:#ffe4a333}
+#playerGesture span{font-size:33px;display:block}
+#playerGesture small{font-size:12px;line-height:1.4;flex:1}
+#storyHud{pointer-events:none}
+#dialogueBadge{display:inline-block;font-size:12px;letter-spacing:.08em;background:#15435abe;color:#e3fcff;border:1px solid #90d4e196;border-radius:7px;padding:4px 11px;margin:0 auto 5px;box-shadow:0 4px 15px #04132688}
+#storyHud.sister-dialogue #caption{border-left:3px solid #9bd6e6;background:linear-gradient(90deg,#073246dc,#05283dde 75%,transparent)}
+#storyHud.inner-dialogue #caption{font-style:italic;background:linear-gradient(90deg,transparent,#131a2de3 20%,#131a2de3 80%,transparent)}
+#storyHud.instruction-dialogue #caption{background:#142840da;border:1px solid #94b8db77;border-radius:8px}
+#storyHud.sister-dialogue #captionChannel{color:#c1f7fa;font-weight:600}
+#reaching{z-index:5;left:61%;top:47%;background:#0e3549dc;border-color:#f4dcbeaa}
+#reaching small{max-width:185px}
+@media(max-width:740px){#wardGesture{width:38%;right:2%;top:30%}#wardGesture span{font-size:29px}#wardGesture small{font-size:10px}#playerGesture{width:32%;top:48%;padding:7px}#wardNote{width:38%;left:4%}#wardTickets{right:7%;top:57%;transform:scale(.77);transform-origin:right top}.ticketStub{min-width:82px;font-size:10px;padding:5px}#nurseCue{width:38%;top:32%}#gestureMode{max-width:55%;font-size:10px}#gestureMode small{display:none}#mirrorTech{font-size:10px}#dialogueBadge{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.reflectedPerson,#wardGesture span,#wardTickets,#windowThought,#reaching{animation:none!important}#sceneVeil{transition:none}}
+
+#wardGesture.sister-lowers #actionIcon{animation:lowerHands 1.5s cubic-bezier(.3,.1,.2,1) 1 forwards}
+@keyframes lowerHands{from{transform:translateY(-6px) rotate(-8deg);opacity:.95}to{transform:translateY(10px) rotate(0);opacity:.7}}
+
+/* v0.4: exported transparent user fish sprites; no additional painted backgrounds. */
+.school{position:absolute;display:block;width:39%;height:auto;object-fit:contain;filter:drop-shadow(0 3px 5px #00203855);will-change:transform;transition:none;}
+.school.left{top:32%;left:6%;font-size:initial;}
+.school.right{top:35%;right:6%;font-size:initial;}
+#specialFish{position:absolute;width:clamp(88px,14.4vw,191px);height:auto;left:48%;top:44%;font-size:initial;z-index:2;transform-origin:center;will-change:transform,top,left,filter;transition:none;pointer-events:none;}
+#fishAssistBtn{font-size:12px;color:#ffeacb;background:#163f52d9;border-color:#dda866aa;}
+#nurseResponse{display:block;opacity:0;transform:translateX(-12px);transition:opacity .55s ease,transform .55s ease;font-size:clamp(12px,1.15vw,16px);font-weight:600;color:#fff0c6;animation:none;}
+#nurseCue.responded #nurseResponse{opacity:1;transform:translateX(0);}
+#nurseCue.responded{box-shadow:0 0 30px #94cce72c;border-left-color:#f9e8bd;}
+@media(max-width:740px){.school{width:45%}#specialFish{width:clamp(70px,15vw,110px)}}
+
+#cupPrompt{position:absolute;z-index:4;top:12%;right:2%;max-width:255px;padding:12px 14px;border-radius:13px;background:#09253cda;border:1px solid #f8d8a576;color:#fff2d8;box-shadow:0 3px 25px #0008;pointer-events:none;animation:noteIn .8s ease both;text-align:left;}
+#cupPrompt strong{display:block;font-size:14px;margin-bottom:8px;}
+#cupPrompt small{display:block;font-size:12px;line-height:1.65;}
+@media(max-width:740px){#cupPrompt{top:8%;right:2%;max-width:190px;padding:8px 9px}#cupPrompt strong{font-size:12px}#cupPrompt small{font-size:9px}}
+
+#fishHalo{position:absolute;z-index:1;width:210px;height:90px;left:50%;top:68%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(ellipse,#ffdca579 0%,#ffe8b526 35%,transparent 72%);filter:blur(8px);}
+
+/* v0.5: 简洁蓝鱼群，保留 v0.4 独立橙色小鱼；两组不共享运动相位。 */
+.school{width:clamp(170px,23vw,294px);object-fit:contain;filter:drop-shadow(0 0 5px #54cfe1c7) drop-shadow(0 4px 8px #071c3555);}
+.school.left{left:10%;top:40%}
+.school.right{right:9%;top:47%}
+#oceanTint{background:#041228;transition:opacity .75s ease;}
+/* 舞台聚焦：只叠加水纹，不让水纹盖住字幕和操作。 */
+#waterRipple{inset:auto;left:50%;top:52%;width:clamp(125px,19vw,244px);height:clamp(105px,16vw,202px);transform:translate(-50%,-50%);z-index:2;
+ border:none;border-radius:0;box-shadow:none;background:none;mix-blend-mode:screen;opacity:0;transition:opacity .13s linear;}
+.ripple-ring{position:absolute;inset:18% 11%;border:clamp(2px,.24vw,3px) solid #b3f8fff0;border-radius:50%;
+ box-shadow:0 0 10px #bffcffdb,0 0 25px #6cf5ffc0,inset 0 0 11px #8bffff6e;
+ background:radial-gradient(ellipse,transparent 50%,#c7f7ff19 81%,transparent 86%);
+ transform-origin:center;animation:rippleSpread 1.35s ease-out infinite;}
+.ring-two{animation-delay:-.45s;opacity:.65}
+.ring-three{animation-delay:-.90s;opacity:.7}
+.water-core{position:absolute;left:28%;top:33%;width:44%;height:34%;border-radius:50%;
+ background:radial-gradient(ellipse,#b7ffff2e,#87dfff23 49%,transparent 70%);filter:blur(5px);}
+@keyframes rippleSpread{0%{transform:scale(.29) rotate(-9deg);opacity:1}75%{opacity:.56}100%{transform:scale(1.62) rotate(6deg);opacity:0}}
+
+/* v0.6: 开场安静教学 —— 水面被动作搅动，静止后自然平息。 */
+#stage.turbulent .ripple-ring{animation-duration:.52s}
+#stage.turbulent .ripple-ring:before{content:"";position:absolute;inset:-30%;border:1px solid #dffcff8e;border-radius:50%;box-shadow:0 0 19px #8fefff9e}
+#stage.calm #waterRipple{transition:opacity 1.6s ease}
+#stage.calm .ripple-ring{animation-duration:2.6s;opacity:.34}
+
+/* v0.6: 病房手影 —— 你的手掌投影在她面前，随真实掌心位置移动。 */
+#handShadow{position:absolute;z-index:2;left:50%;top:64%;width:clamp(120px,15vw,198px);height:clamp(96px,12vw,158px);
+ transform:translate(-50%,-50%) rotate(-8deg);pointer-events:none;opacity:0;will-change:left,top,opacity;
+ filter:blur(3.2px) brightness(.88) contrast(1.05);mix-blend-mode:multiply;
+ background:
+  radial-gradient(ellipse 10% 26% at 27% 20%,#0e1c38ea,transparent 74%),
+  radial-gradient(ellipse 10% 26% at 41% 13%,#0e1c38ea,transparent 74%),
+  radial-gradient(ellipse 10% 28% at 55% 14%,#0e1c38ea,transparent 74%),
+  radial-gradient(ellipse 10% 26% at 68% 22%,#0e1c38e8,transparent 74%),
+  radial-gradient(ellipse 8% 17% at 79% 44%,#0e1c38dd,transparent 74%),
+  radial-gradient(ellipse 46% 44% at 51% 69%,#0e1c38f2,transparent 76%);
+ animation:handShadowBreath 2.7s ease-in-out infinite alternate;}
+@keyframes handShadowBreath{from{filter:blur(3.2px) brightness(.88)}to{filter:blur(4.4px) brightness(.8)}}
+#handShadow.focused{animation:none;filter:blur(2.6px) brightness(.92) drop-shadow(0 0 14px #ffd9a236)}
+@media(prefers-reduced-motion:reduce){#handShadow{animation:none!important}}
+#fishLayer{filter:none}
+/* 追加可选贴图：文件缺失时自动保持隐藏，原字幕卡和图标仍为完整降级方案。 */
+.optionalSceneArt{position:absolute;object-fit:contain;pointer-events:none;z-index:4;filter:drop-shadow(0 8px 18px #07142e65);}
+#sisterGreetingAsset{left:65%;top:35%;width:clamp(90px,15vw,190px);height:29%;animation:gentleGesture 1.5s ease-in-out infinite alternate;}
+#sisterReachAsset{left:54%;top:43%;width:clamp(130px,22vw,310px);height:43%;z-index:5;animation:reachHand 1.5s cubic-bezier(.18,.54,.23,1) both;}
+#nurseAsset{left:1%;top:22%;width:clamp(86px,15vw,180px);height:43%;z-index:3;opacity:.8;}
+@keyframes reachHand{from{transform:scale(.8) translate(22px,10px);opacity:0}to{transform:scale(1) translate(0,0);opacity:1}}
+#stage.is-bridge #wardBg{transform:scale(1.09);transform-origin:23% 42%;filter:brightness(.76) saturate(.88)}
+#stage.is-bridge #mirrorLayer{z-index:4}
+@media(max-width:740px){.school{width:clamp(115px,25vw,200px);}.optionalSceneArt{max-width:37%;}#waterRipple{width:30%;height:28%}}
+@media(prefers-reduced-motion:reduce){.ripple-ring,#sisterGreetingAsset,#sisterReachAsset{animation:none!important}}
